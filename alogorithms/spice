@@ -1,0 +1,108 @@
+void main() {
+  // List of snacks with their respective spiciness values.
+  List<Map<String, dynamic>> snacks = [
+    {"name": "Samosa", "spiciness": 5},
+    {"name": "Ketchup", "spiciness": 2},
+    {"name": "Chips", "spiciness": 3},
+    {"name": "Spicy Nuts", "spiciness": 4}
+  ];
+
+  // Target spiciness level to reach.
+  int targetSpiciness = 7;
+
+  // Function to count combinations of snacks to reach target spiciness.
+  int countSnackCombinations(List<Map<String, dynamic>> snacks, int target) {
+    // Extract spiciness levels from the snack list.
+    List<int> spicinessLevels = snacks.map((snack) => snack['spiciness'] as int).toList();
+
+    // Create a dp array with target + 1 length to store ways to achieve each spiciness level.
+    List<int> dp = List.filled(target + 1, 0);
+
+    // There's exactly one way to reach spiciness level 0 (by selecting no snacks).
+    dp[0] = 1;
+
+    // Loop through each spiciness level and update the dp array.
+    for (int spiciness in spicinessLevels) {
+      for (int i = spiciness; i <= target; i++) {
+        // Update the number of ways to reach spiciness level i
+        dp[i] += dp[i - spiciness];
+      }
+    }
+
+    // Return the number of ways to reach the target spiciness level.
+    return dp[target];
+  }
+
+  // Call the function and print the result.
+  int result = countSnackCombinations(snacks, targetSpiciness);
+  print("Total combinations to reach spiciness level $targetSpiciness: $result");
+},
+
+
+
+To solve this problem effectively, and for deeper understanding of the principles involved, here's what you need to focus on:
+Key Concepts to Study:
+
+    Dynamic Programming (DP):
+        This is a crucial technique in combinatorics and optimization problems. In this context, you're calculating the number of ways to reach a target sum (spiciness level).
+        Knapsack-like problems: Your problem is related to the "unbounded knapsack problem," where you need to find combinations to reach a sum using values that can be repeated.
+        Coin Change Problem: This is a classical problem that can help you better understand how to solve such problems.
+
+    Combination vs. Permutation:
+        Combinations are selections where the order does not matter. Here, we’re interested in combinations where the total sum of spiciness values equals the target.
+        Understanding the difference between unique combinations and repeated arrangements is key, especially when allowing items to be reused.
+
+    Subset Sum Problem:
+        This is closely related to your problem. It asks whether a subset of a set of numbers can sum to a specific target. You are essentially finding all subsets (with repetition allowed) that sum to the target.
+
+    Memoization and Tabulation:
+        Memoization stores intermediate results to avoid redundant calculations in recursive solutions.
+        Tabulation is the bottom-up approach used in your code (storing solutions for smaller subproblems in an array and building them up to the target).
+
+How to Study:
+1. Dynamic Programming:
+
+    Books: "Introduction to Algorithms" by Cormen et al. has a great introduction to dynamic programming.
+    Online resources:
+        Dynamic Programming by GeeksforGeeks
+        Dynamic programming tutorials on YouTube, like those by Abdul Bari or NeetCode.
+        Practice DP problems on platforms like LeetCode, HackerRank, or Codeforces.
+
+2. Subset Sum and Knapsack Problems:
+
+    GeeksforGeeks: Search for problems like Coin Change Problem, 0/1 Knapsack, and Subset Sum. They usually come with detailed explanations and solutions.
+    LeetCode Problems:
+        Problem #518: Coin Change 2.
+        Problem #377: Combination Sum IV (This one is especially similar to your problem).
+
+3. Practicing Similar Problems:
+
+    Try coding problems on LeetCode or GeeksforGeeks that involve combination sums, knapsack, or coin change.
+    Platforms like Exercism.io and Codewars can also offer small coding exercises for problem-solving techniques.
+
+Your Specific Problem Breakdown:
+Steps to Solve:
+
+    Understand what needs to be solved: You want the number of combinations (not permutations) where the sum of spiciness equals the target, allowing snack reuse.
+
+    Dynamic programming approach:
+        Use a DP array where dp[i] represents the number of ways to form a spiciness level of i.
+        Initialize dp[0] = 1 because there is one way to make a total of 0 spiciness (by choosing nothing).
+        For each spiciness level from 1 to targetSpiciness, try to add each snack’s spiciness value, checking if it can contribute to the current total.
+
+    Understand why the answer is 3, not 7:
+        You’re looking for combinations of snacks, so order doesn’t matter. This is why some solutions (like rearranging the same items) should not be double-counted.
+
+Resources:
+
+    Codeforces (Problems like "Knapsack", "Coin Change", etc.):
+        https://codeforces.com/
+
+    GeeksforGeeks (For detailed problem explanations and DP):
+        https://www.geeksforgeeks.org/
+
+    LeetCode (Practice problems with explanations):
+        https://leetcode.com/
+
+Would you like a more in-depth explanation of dynamic programming in relation to your problem? I can provide further examples and break down the solution step-by-step.
+

@@ -1,0 +1,83 @@
+import 'dart:math';
+
+// Directions for moving in the grid: up, down, left, right
+List<List<int>> directions = [
+  [-1, 0], // up
+  [1, 0],  // down
+  [0, -1], // left
+  [0, 1]   // right
+];
+
+// DFS function to find the longest ridge path starting from a point
+List<List<int>> dfs(List<List<int>> grid, int i, int j) {
+  int n = grid.length;
+  int m = grid[0].length;
+  
+  List<List<int>> longestPath = [[i, j]]; // The current path starting from (i, j)
+  
+  // Explore all 4 possible directions (up, down, left, right)
+  for (var dir in directions) {
+    int newRow = i + dir[0];
+    int newCol = j + dir[1];
+    
+    // Check if the new position is within bounds and the elevation is higher
+    if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && grid[newRow][newCol] > grid[i][j]) {
+      List<List<int>> newPath = dfs(grid, newRow, newCol); // Recursively find the longest path from the new cell
+      
+      // Choose the longer path or, if the length is the same, the path with the higher elevation sum
+      if (newPath.length > longestPath.length) {
+        longestPath = [[i, j]] + newPath;
+      } else if (newPath.length == longestPath.length) {
+        int currentSum = longestPath.fold(0, (sum, coord) => sum + grid[coord[0]][coord[1]]);
+        int newSum = newPath.fold(0, (sum, coord) => sum + grid[coord[0]][coord[1]]);
+        if (newSum > currentSum) {
+          longestPath = [[i, j]] + newPath;
+        }
+      }
+    }
+  }
+  
+  return longestPath;
+}
+
+// Main function to find the longest ridge path in the grid
+List<List<int>> findLongestRidgePath(List<List<int>> grid) {
+  int n = grid.length;
+  int m = grid[0].length;
+  
+  List<List<int>> longestRidge = [];
+  
+  // Explore every point in the grid to find the longest ridge path
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      List<List<int>> currentRidge = dfs(grid, i, j);
+      
+      // Update the longest ridge path if needed
+      if (currentRidge.length > longestRidge.length) {
+        longestRidge = currentRidge;
+      } else if (currentRidge.length == longestRidge.length) {
+        int currentSum = longestRidge.fold(0, (sum, coord) => sum + grid[coord[0]][coord[1]]);
+        int newSum = currentRidge.fold(0, (sum, coord) => sum + grid[coord[0]][coord[1]]);
+        if (newSum > currentSum) {
+          longestRidge = currentRidge;
+        }
+      }
+    }
+  }
+  
+  return longestRidge;
+}
+
+void main() {
+  List<List<int>> grid = [
+    [10, 12, 14, 13, 9],
+    [9, 11, 15, 14, 8],
+    [8, 10, 12, 16, 7],
+    [7, 9, 11, 10, 6]
+  ];
+
+  List<List<int>> longestRidge = findLongestRidgePath(grid);
+  print('The longest ridge path is:');
+  print(longestRidge);
+}
+
